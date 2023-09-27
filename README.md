@@ -15,14 +15,14 @@ The main use case is for local development of Istio and Envoy WASM plugins.
 
 ## Getting Started
 
-**Clone the Repository**:
+#### Clone the Repository
 
 ```console
 git clone https://github.com/your-repo-link/wasm-plugins-server.git
 cd wasm-plugins-server
 ```
 
-**Set Upload Directory (Optional)**:
+#### Set Upload Directory (Optional)
 
 By default, the server saves uploaded files to a directory named `uploads`. However, you can specify a custom directory by setting the `UPLOAD_DIR` environment variable.
 
@@ -30,7 +30,7 @@ By default, the server saves uploaded files to a directory named `uploads`. Howe
 export UPLOAD_DIR=/path/to/custom/upload/directory
 ```
 
-**Run the Server**:
+#### Run the Server
 
 ```console
 go run main.go
@@ -41,22 +41,69 @@ Once started, the server will be accessible at `http://localhost:8080`.
 ## Endpoints
 
 These are the http endpoints available
-- **Upload a WASM Plugin**:  
-`POST /wasm-plugins/{filename}`  
+
+### Uploading a WASM Plugin
+
+> `POST /wasm-plugins/{filename}`  
 Use a form field named `file` to upload the WASM file.
 
-- **Download a WASM Plugin**:  
-`GET /wasm-plugins/{filename}`
+### Downloading a WASM Plugin
+> `GET /wasm-plugins/{filename}`
 
-- **List All Plugins**:  
-`GET /list`
+### Listing All Plugins
+> `GET /list`
 
-Example usage
+### Example usage
 
 ```console
 curl -X POST -F "file=@envoy-plugin.wasm" http://localhost:8080/wasm-plugins/envoy-plugin.wasm
 curl http://localhost:8080/wasm-plugins/envoy-plugin.wasm -o envoy-plugin.wasm
 ```
+
+
+## Deployment
+### Kubernetes Deployment
+#### Create the Deployment:
+
+Deploy the application and its necessary components using the provided Kubernetes manifest
+```console
+kubectl apply -f kubernetes.yaml
+```
+
+#### Access the Service:
+
+After deploying, if you've used a LoadBalancer service type, you can fetch the external IP with:
+```console
+kubectl get service wasm-repo-service -o=jsonpath='{.status.loadBalancer.ingress[0].ip}'
+```
+Navigate to this IP to access the application.
+
+#### Setup Domain:
+
+For domain-based access, ensure that your domain DNS is set up to resolve wasm-repo.yourdomain.com to the external IP mentioned above. After this, you should be able to access the application using http://wasm-repo.yourdomain.com.
+
+### Istio Deployment
+
+#### Ensure Istio Setup
+
+Make sure the Istio Ingress Gateway is deployed in your cluster. If you've installed Istio using the default profile, the ingress gateway would already be present. Otherwise, consult the official Istio documentation to set up an Istio environment.
+
+#### Apply the Istio Deployment and Components
+
+Deploy the application using the Istio manifest:
+
+```console
+kubectl apply -f istio.yaml
+```
+
+#### Access the Service via Istio
+
+Once the gateway and virtual service are in place, ensure your domain DNS (wasm-repo.yourdomain.com) resolves to the IP of the Istio Ingress Gateway. You can usually retrieve this IP with:
+
+```console
+kubectl get service istio-ingressgateway -n istio-system -o=jsonpath='{.status.loadBalancer.ingress[0].ip}'
+```
+After setting up DNS, navigate to http://wasm-repo.yourdomain.com to access the application.
 
 ## Makefile Usage
 

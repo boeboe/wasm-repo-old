@@ -50,21 +50,33 @@ spec:
       targetPort: 8080
   type: LoadBalancer
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
 metadata:
-  name: wasm-repo-ingress
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
+  name: wasm-repo-gateway
 spec:
-  rules:
-  - host: wasm-repo.yourdomain.com  # Replace with your domain or subdomain
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: wasm-repo-service
-            port:
-              number: 80
+  selector:
+    istio: ingress
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "wasm-repo.yourdomain.com"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: wasm-repo-virtual-service
+spec:
+  hosts:
+  - "wasm-repo.yourdomain.com"
+  gateways:
+  - wasm-repo-gateway
+  http:
+  - route:
+    - destination:
+        host: wasm-repo-service
+        port:
+          number: 80
