@@ -63,14 +63,11 @@ curl http://localhost:8080/wasm-plugins/envoy-plugin.wasm -o envoy-plugin.wasm
 
 ## Deployment
 ### Kubernetes Deployment
-#### Create the Deployment
 
 Deploy the application and its necessary components using the provided Kubernetes manifest
 ```console
 kubectl apply -f kubernetes.yaml
 ```
-
-#### Access the Service
 
 After deploying, if you've used a LoadBalancer service type, you can fetch the external IP with:
 ```console
@@ -78,25 +75,17 @@ kubectl get service wasm-repo-service -o=jsonpath='{.status.loadBalancer.ingress
 ```
 Navigate to this IP to access the application.
 
-#### Setup Domain
-
 For domain-based access, ensure that your domain DNS is set up to resolve wasm-repo.yourdomain.com to the external IP mentioned above. After this, you should be able to access the application using http://wasm-repo.yourdomain.com.
 
 ### Istio Deployment
 
-#### Ensure Istio Setup
-
 Make sure the Istio Ingress Gateway is deployed in your cluster. If you've installed Istio using the default profile, the ingress gateway would already be present. Otherwise, consult the official Istio documentation to set up an Istio environment.
-
-#### Apply the Istio Deployment and Components
 
 Deploy the application using the Istio manifest:
 
 ```console
 kubectl apply -f istio.yaml
 ```
-
-#### Access the Service via Istio
 
 Once the gateway and virtual service are in place, ensure your domain DNS (wasm-repo.yourdomain.com) resolves to the IP of the Istio Ingress Gateway. You can usually retrieve this IP with:
 
