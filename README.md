@@ -63,14 +63,14 @@ curl http://localhost:8080/wasm-plugins/envoy-plugin.wasm -o envoy-plugin.wasm
 
 ## Deployment
 ### Kubernetes Deployment
-#### Create the Deployment:
+#### Create the Deployment
 
 Deploy the application and its necessary components using the provided Kubernetes manifest
 ```console
 kubectl apply -f kubernetes.yaml
 ```
 
-#### Access the Service:
+#### Access the Service
 
 After deploying, if you've used a LoadBalancer service type, you can fetch the external IP with:
 ```console
@@ -78,7 +78,7 @@ kubectl get service wasm-repo-service -o=jsonpath='{.status.loadBalancer.ingress
 ```
 Navigate to this IP to access the application.
 
-#### Setup Domain:
+#### Setup Domain
 
 For domain-based access, ensure that your domain DNS is set up to resolve wasm-repo.yourdomain.com to the external IP mentioned above. After this, you should be able to access the application using http://wasm-repo.yourdomain.com.
 
