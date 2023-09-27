@@ -1,7 +1,7 @@
 # WASM Plugins Server
 
 This server provides a simple way to upload and download WASM plugin files. It is built using Go and offers a lightweight solution for managing your WASM files.
-The main use case is for local development of Istio and Envoy WASM plugins
+The main use case is for local development of Istio and Envoy WASM plugins.
 
 ## Features
 

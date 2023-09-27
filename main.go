@@ -33,9 +33,20 @@ func initUploadDirectory() {
 		uploadDir = "./uploads" // Default if the environment variable is not set
 	}
 
-	err := os.MkdirAll(uploadDir, 0755)
-	if err != nil {
-		fmt.Printf("Error creating upload directory: %v\n", err)
+	if info, err := os.Stat(uploadDir); err == nil {
+		if !info.IsDir() {
+			fmt.Printf("%v already exists but is not a directory\n", uploadDir)
+			os.Exit(1)
+		}
+		return
+	} else if os.IsNotExist(err) {
+		err := os.MkdirAll(uploadDir, 0755)
+		if err != nil {
+			fmt.Printf("Error creating upload directory: %v\n", err)
+			os.Exit(1)
+		}
+	} else {
+		fmt.Printf("Error checking upload directory: %v\n", err)
 		os.Exit(1)
 	}
 }
@@ -75,6 +86,10 @@ func saveUploadedFile(r *http.Request, filePath string) error {
 		return fmt.Errorf("failed to read uploaded file: %v", err)
 	}
 	defer uploadedFile.Close()
+
+	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
+		fmt.Println("file already exists, overwriting:", filePath)
+	}
 
 	dstFile, err := os.Create(filePath)
 	if err != nil {
