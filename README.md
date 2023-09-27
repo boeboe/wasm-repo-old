@@ -81,11 +81,12 @@ make help
 
 help                           This help
 lint                           Lint the project using golangci-lint (ensure it's installed)
-compile                        Compile the project
+build                          Compile the project (x86_64 & arm64)
 run                            Run the binary
 release                        Create a GitHub release and upload the binary
 docker-build                   Build multi-platform Docker image using buildx
 docker-run                     Run the Docker container
+docker-release                 Release the Docker image to the registry
 ```
 
 ## Contributing

@@ -36,14 +36,14 @@ $(BINARY_NAME): $(GO_FILES)
 	GOOS=linux GOARCH=amd64 go build -o $(BINARY_NAME)-x86_64 $(GO_FILES)
 	GOOS=linux GOARCH=arm64 go build -o $(BINARY_NAME)-arm64 $(GO_FILES)
 
-compile: lint $(BINARY_NAME) ## Compile the project
+build: lint $(BINARY_NAME) ## Compile the project (x86_64 & arm64)
 
 run: $(BINARY_NAME) ## Run the binary
 	@echo "Running..."
 	@[ -d $(UPLOAD_DIR) ] || mkdir -p $(UPLOAD_DIR)
 	UPLOAD_DIR=$(UPLOAD_DIR) ./$(BINARY_NAME)
 
-release: compile ## Create a GitHub release and upload the binary
+release: build ## Create a GitHub release and upload the binary
 	@which gh >/dev/null || (echo "gh is not installed" && exit 1)
 	@echo "Checking if release $(RELEASE_VERSION) already exists..."
 	@if gh release view $(RELEASE_VERSION) -R $(GIT_REPO) > /dev/null 2>&1; then \
@@ -55,10 +55,14 @@ release: compile ## Create a GitHub release and upload the binary
 
 docker-build: ## Build multi-platform Docker image using buildx
 	@echo "Building multi-platform Docker image..."
-	docker buildx build --platform linux/amd64,linux/arm64 -t $(DOCKER_HUB_REPO):$(RELEASE_VERSION) . --push
+	docker buildx build --platform linux/amd64,linux/arm64 -t $(DOCKER_HUB_REPO):$(RELEASE_VERSION) .
 
 docker-run: ## Run the Docker container
 	@echo "Running Docker container..."
 	if [ "$$(uname -m)" = "arm64" ]; then docker pull --platform linux/arm64 boeboe/wasm-repo:$(RELEASE_VERSION); fi
 	if [ "$$(uname -m)" = "x86_64" ]; then docker pull --platform linux/amd64 boeboe/wasm-repo:$(RELEASE_VERSION); fi
 	docker run -p 8080:8080 -e UPLOAD_DIR=/root/uploads $(DOCKER_HUB_REPO):$(RELEASE_VERSION)
+
+docker-release: docker-build ## Release the Docker image to the registry
+	@echo "Pushing Docker image to registry..."
+	docker buildx build --platform linux/amd64,linux/arm64 -t $(DOCKER_HUB_REPO):$(RELEASE_VERSION) . --push
