@@ -1,0 +1,16 @@
+# Binary builds
+wasm-repo
+wasm-repo-arm64
+wasm-repo-x86_64
+
+# Dependency directory (is fetched with go mod download)
+/pkg/
+
+# IDEs and editors
+*.idea
+*.vscode
+.vscode/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
