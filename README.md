@@ -1,6 +1,7 @@
 # WASM Plugins Server
 
 This server provides a simple way to upload and download WASM plugin files. It is built using Go and offers a lightweight solution for managing your WASM files.
+The main use case is for local development of Istio and Envoy WASM plugins
 
 ## Features
 
@@ -14,14 +15,14 @@ This server provides a simple way to upload and download WASM plugin files. It i
 
 ## Getting Started
 
-1. **Clone the Repository**:
+**Clone the Repository**:
 
 ```console
 git clone https://github.com/your-repo-link/wasm-plugins-server.git
 cd wasm-plugins-server
 ```
 
-2. **Set Upload Directory (Optional)**:
+**Set Upload Directory (Optional)**:
 
 By default, the server saves uploaded files to a directory named `uploads`. However, you can specify a custom directory by setting the `UPLOAD_DIR` environment variable.
 
@@ -29,12 +30,11 @@ By default, the server saves uploaded files to a directory named `uploads`. Howe
 export UPLOAD_DIR=/path/to/custom/upload/directory
 ```
 
-3. **Run the Server**:
+**Run the Server**:
 
 ```console
 go run main.go
 ```
-
 
 Once started, the server will be accessible at `http://localhost:8080`.
 
@@ -87,9 +87,6 @@ release                        Create a GitHub release and upload the binary
 docker-build                   Build multi-platform Docker image using buildx
 docker-run                     Run the Docker container
 ```
-
-1. **Linting the project**:
-
 
 ## Contributing
 
